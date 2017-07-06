@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+        <title>Account Page</title>
+    	<h:outputStylesheet library = "css" name = "account.css"  /> 
+    </h:head>
+
+    <h:body>
+         <h:panelGroup layout="block" styleClass="imgcontainer">
+            <h:graphicImage library="img" name="login.png" alt="Login" height="120px" width="120px"/>
+         </h:panelGroup>
+         
+         <h:panelGroup layout="block" styleClass="login">
+               <h3>Welcome</h3>
+               <h:form>
+                   <h:panelGroup layout="block" styleClass="loginform">
+                     <h:inputText id="id_loginEmail" styleClass="input-text" required="true" pt:placeholder="Enter Email"
+		                                                 validatorMessage="Invalid email format">
+	                 <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+	                 <f:validateLength minimum="10" maximum="20"/>
+	                 </h:inputText>
+	                 
+	                 <h:inputSecret id="id_loginPsw" styleClass="input-password" required="true" pt:placeholder="Enter Password"
+		                                                 validatorMessage="Invalid password format">
+	                 <f:validateLength minimum="5" maximum="20"/>
+	                 </h:inputSecret>
+	                 
+	                 <h:commandButton type="submit" value="Log In" styleClass="loginbtn button"/>
+	                 <h:commandButton type="button" value="Sign Up" styleClass="signupbtn button" 
+	                                              onclick="document.getElementById('id_popUpWindow').style.display='block'"/>
+	                 
+                  </h:panelGroup>
+               </h:form>
+         </h:panelGroup>
+         
+         <h:panelGroup id="id_popUpWindow" styleClass="popUpWindow">
+         
+            <span onclick="document.getElementById('id_popUpWindow').style.display='none'" class="close-button" title="Close">&#10005;</span>
+             
+            <h:form styleClass="popUpWindow-content animate">
+               
+                 <h:inputText id="id_SignUpName" styleClass="input-text" required="true" pt:placeholder="Enter Name"
+		                                                 validatorMessage="Invalid email format">
+	                 <f:validateLength maximum="20"/>
+	             </h:inputText>
+                 
+                 <h:inputText id="id_SignUpEmail" styleClass="input-text" required="true" pt:placeholder="Enter Email"
+		                                                 validatorMessage="Invalid email format">
+	                 <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+	                 <f:validateLength minimum="10" maximum="20"/>
+	             </h:inputText>
+	             
+	             <h:inputSecret id="id_SignUpPsw" styleClass="input-password" required="true" pt:placeholder="Enter Password"
+		                                                 validatorMessage="Invalid password format">
+	                 <f:validateLength minimum="5" maximum="20"/>
+	             </h:inputSecret>
+                 
+                  <h:inputSecret id="id_SignUpPswRepeat" styleClass="input-password" required="true" pt:placeholder="Repeat Password"
+		                                                 validatorMessage="Invalid password format">
+	                 <f:validateLength minimum="5" maximum="20"/>
+	              </h:inputSecret>
+                 
+                  <h:selectBooleanCheckbox id="id_SignUpChecked" required="true" value="#{true}"/> By creating an account you agree to our <a href="#">Terms &amp; Privacy</a>  
+                
+                  <h:commandButton type="submit" value="Sign Up" styleClass="button"/>
+               
+            </h:form>
+            
+         </h:panelGroup>
+         
+    </h:body>   
+</html>
