@@ -110,6 +110,18 @@ body{
     color: #cc0000;
     cursor: pointer;
 }
+.ui-growl-item-container{
+	color: #fff;
+	background-color:#ff9999;
+	border-bottom-style: none;
+    border-top-style: none;
+    border-right-style: none;
+    border-left-style: none; 
+    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
 @media screen and (max-width: 800px) {
    .loginbtn,.signupbtn{
    	     float:none;
