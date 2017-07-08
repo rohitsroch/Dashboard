@@ -6,12 +6,12 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
       
     <h:head>
-        <title>Account Page</title>
+        <title>Account</title>
     	<h:outputStylesheet library = "css" name = "account.css"  /> 
     </h:head>
 
     <h:body>
-         <p:growl id="msg" />
+         <p:growl id="growl" />
 
          <h:panelGroup layout="block" styleClass="imgcontainer">
             <h:graphicImage library="img" name="login.png" alt="Login" height="120" width="120"/>
@@ -43,29 +43,28 @@
              
             <h:form styleClass="popUpWindow-content animate">
                
-                 <h:inputText label="Name" styleClass="input-text" required="true" pt:placeholder="Enter Name">
-		                                                
-	                 <f:validateLength maximum="20"/>
+                 <h:inputText label="Name" value="#{signupBean.signUpName}" size="20" styleClass="input-text" required="true" pt:placeholder="Enter Name">                                   
+	                 <f:validateLength minimum="2" maximum="20"/>
 	             </h:inputText>
                  
-                 <h:inputText label="Email" styleClass="input-text" required="true" pt:placeholder="Enter Email">
+                 <h:inputText label="Email" value="#{signupBean.signUpEmail}" size="20" styleClass="input-text" required="true" pt:placeholder="Enter Email">
 	                 <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 	                 <f:validateLength minimum="10" maximum="20"/>
 	             </h:inputText>
 	             
-	             <h:inputSecret label="Password" styleClass="input-password" required="true" pt:placeholder="Enter Password">
+	             <h:inputSecret label="Password" value="#{signupBean.signUpPassword}" size="20" styleClass="input-password" required="true" pt:placeholder="Enter Password">
 		                                               
 	                 <f:validateLength minimum="5" maximum="20"/>
 	             </h:inputSecret>
                  
-                  <h:inputSecret label="Repeat-Password" styleClass="input-password" required="true" pt:placeholder="Repeat Password">
+                  <h:inputSecret label="Repeat-Password" value="#{signupBean.signUpPasswordRepeat}" size="20" styleClass="input-password" required="true" pt:placeholder="Repeat Password">
 		                                                 
 	                 <f:validateLength minimum="5" maximum="20"/>
 	              </h:inputSecret>
                  
-                  <h:selectBooleanCheckbox required="true" value="#{true}"/> By creating an account you agree to our <a href="#">Terms &amp; Privacy</a>  
+                  <h:selectBooleanCheckbox required="true" value="#{signupBean.isCreateAccount}"/> By creating an account you agree to our <a href="#">Terms &amp; Privacy</a>  
                 
-                  <h:commandButton type="submit" value="Sign Up" styleClass="button"/>
+                  <h:commandButton type="submit" value="Sign Up" styleClass="button" action="#{signupBean.userSignUp()}" update="growl"/>
                   
                  
             </h:form>

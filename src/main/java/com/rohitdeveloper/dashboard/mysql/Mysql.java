@@ -98,10 +98,11 @@ public class Mysql {
 	}
     
     
-    //INSERT INTO QUERY
-    public String insertQuery(String employeename, String designation, Integer salary) throws SQLException{
+    //INSERT INTO QUERY FOR EMPLOYEE INSERT
+    public String insertQueryForEmployee(String employeename, String designation, Integer salary) throws SQLException{
         Connection myConn=null;
     	PreparedStatement pstmt=null;	
+    	String msg="success";
  	   try {
  			// 1. Get a connection to database
  			myConn=getConnection();	
@@ -130,7 +131,44 @@ public class Mysql {
  			}
  		}
  	   
- 		return null;
+ 		return msg;
+ 	}
+    
+    
+    //INSERT INTO QUERY FOR EMPLOYEE INSERT
+    public String insertQueryForSignUp(String username, String useremail , String userhash) throws SQLException{
+        Connection myConn=null;
+    	PreparedStatement pstmt=null;	
+    	String msg="success";
+ 	   try {
+ 			// 1. Get a connection to database
+ 			myConn=getConnection();	
+ 			// 2. Create a statement	
+ 			String sql="INSERT INTO account (Name,Email,Hash) "+
+ 					" VALUES (?,?,?)"; 
+ 			pstmt=myConn.prepareStatement(sql);
+ 			pstmt.setString(1,username);
+ 			pstmt.setString(2,useremail);
+ 			pstmt.setString(3,userhash);
+ 		    // 3. Execute SQL query
+ 			pstmt.execute();
+ 			
+ 			System.out.println("INSERT QUERY: SUCCESS");
+ 			
+ 		}catch (SQLException exc) {
+ 			System.out.println("Error: "+exc.getMessage());
+ 			
+ 		}finally {
+ 			if (pstmt != null) {
+ 				pstmt.close();
+ 			}
+ 			
+ 			if (myConn != null) {
+ 				myConn.close();
+ 			}
+ 		}
+ 	   
+ 		return msg;
  	}
     
 	//DELETE QUERY

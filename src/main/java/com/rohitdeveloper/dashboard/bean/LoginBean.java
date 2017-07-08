@@ -1,7 +1,6 @@
 package com.rohitdeveloper.dashboard.bean;
 
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -59,7 +58,7 @@ public class LoginBean {
 					isLoginSucessful=true;
 				}
 				
-			  } catch (SQLException e) {
+			  } catch (Exception e) {
 				e.printStackTrace();
 			}
             

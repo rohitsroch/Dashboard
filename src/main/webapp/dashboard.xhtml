@@ -1,9 +1,74 @@
 <!DOCTYPE html>
-<html>
-<head>
-<title>Dashboard Page</title>
-</head>
-<body>
-<h1>Dashboard</h1>
-</body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+      
+    <h:head>
+        <title>DashBoard</title>
+    	<h:outputStylesheet library="css" name="dashboard.css"  /> 
+    </h:head>
+
+    <h:body>
+        <p:growl id="growl" />
+        
+        <header class="headerSection">
+           <h:panelGroup layout="block"  styleClass="profile">
+               <li class="profile-logout">
+                  <h:commandButton type="button" value="Logout" styleClass="logoutButton"/>
+	           </li>
+               <li class="profile-avatar">
+                 <h:graphicImage library="img" name="avatar.png" alt="avatar" height="60" width="60" styleClass="profile-avatar-img"/>
+	           </li>
+	           <li class="profile-info">
+	             <h:outputText id="info-name" value="Welcome Rohit"/><br/>
+	             <h:outputText id="info-email" value="rohitsroch@gmail.com"/>
+	           </li> 
+            </h:panelGroup>
+         </header>
+         
+          <section class="contentSection">
+                <h:panelGroup layout="block" styleClass="employeeForm">
+                   <h3>Employee Details</h3>
+                   <h:form>
+                      <h:inputText label="Employee Name" styleClass="input-text" size="20" required="true" pt:placeholder="Employee Name">                                  
+	                      <f:validateLength minimum="2" maximum="20"/>
+	                  </h:inputText>
+	                  
+                      <h:inputText label="Designation" styleClass="input-text" size="30" required="true" pt:placeholder="Designation">                                  
+	                      <f:validateLength minimum="5" maximum="30"/>
+	                  </h:inputText>
+                     
+                      <h:inputText label="Salary" styleClass="input-number" size="20" required="true" pt:placeholder="Salary (Annual in Rs) Example: Rs30000">                                  
+	                      <f:convertNumber type="currency" currencySymbol="Rs"/> 
+	                      <f:validateLength minimum="6" maximum="20"/>
+	                  </h:inputText>
+               
+                      <h:commandButton type="submit" value="Save" styleClass="save-button"/>
+     
+                   </h:form>
+                </h:panelGroup>
+                
+               <h:panelGroup layout="block" styleClass="search-container">
+                   <h:form styleClass="box"> 
+                      
+                         <h:panelGroup layout="block" styleClass="search-box" >
+                           <h:inputText label="Search" styleClass="input-search" size="50" required="true" pt:placeholder="Search..."/>                                          
+                         </h:panelGroup>
+                     
+                         <h:panelGroup layout="block" styleClass="search-button">
+                          <h:commandButton type="submit" value="" styleClass="img-button"/>      
+                         </h:panelGroup>
+                     
+                   </h:form>   
+               </h:panelGroup>
+                
+                <h:panelGroup layout="block" styleClass="container">
+  	                   <h3>No Records</h3>
+                </h:panelGroup>
+                 
+          </section>
+             
+    </h:body>   
 </html>
