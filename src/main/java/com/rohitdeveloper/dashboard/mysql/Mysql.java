@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.rohitdeveloper.dashboard.model.Employee;
+
 
 public class Mysql {
 	
@@ -36,46 +38,29 @@ public class Mysql {
 	}
 	
    //SELECT ALL QUERY WITHOUT ID
-    public ArrayList<HashMap<String, String> > selectQuery(String id) throws SQLException{
+    public ArrayList<Employee> selectQueryForEmployee() throws SQLException{
     	Connection myConn=null;
     	PreparedStatement pstmt=null;
     	ResultSet myRs=null;
-    	ArrayList< HashMap<String, String> > results =new ArrayList< HashMap<String, String> >();    
+    	ArrayList<Employee> results =new ArrayList<Employee>();    
 		try {
 			// 1. Get a connection to database
 			myConn=getConnection();	
 			// 2. Create a statement
-			if(id==null) {
-				String sql="SELECT * FROM "+tableName;		
-				pstmt=myConn.prepareStatement(sql);
-				// 3. Execute SQL query
-				myRs=pstmt.executeQuery();
-				while (myRs.next()) {
-					HashMap<String, String> map=new HashMap<String, String>();
-					map.put("userid",String.valueOf(myRs.getString("id") ));
-					map.put("username",myRs.getString("EmployeeName"));
-					map.put("userdesignation",myRs.getString("Designation"));
-					map.put("usersalary",myRs.getString("Salary"));
+			String sql="SELECT * FROM "+tableName;		
+			pstmt=myConn.prepareStatement(sql);
+			// 3. Execute SQL query
+			myRs=pstmt.executeQuery();
+			while (myRs.next()) {
+				    Employee curremp=new Employee();
+				    curremp.setId(myRs.getInt("id"));
+					curremp.setEmployeename(myRs.getString("EmployeeName"));
+					curremp.setDesignation(myRs.getString("Designation"));
+					curremp.setSalary(myRs.getInt("Salary"));
 					//store all data into a List
-					results.add(map);
-				}
+					results.add(curremp);
+			 }
 				
-			}else {
-				String sql="SELECT * FROM "+tableName+" WHERE Email=?";		
-				pstmt=myConn.prepareStatement(sql);
-				pstmt.setString(1,id);
-				// 3. Execute SQL query
-				myRs=pstmt.executeQuery();
-				while (myRs.next()) {
-					HashMap<String, String> map=new HashMap<String, String>();
-					map.put("username",myRs.getString("Name"));
-					map.put("useremail",myRs.getString("Email"));
-					map.put("userhash",myRs.getString("Hash"));
-					//store all data into a List
-					results.add(map);
-				}
-			}
-		   
 			System.out.println("SELET QUERY: SUCCESS");
 		}catch (SQLException exc) {
 			System.out.println("Error: "+exc.getMessage());
@@ -98,11 +83,54 @@ public class Mysql {
 	}
     
     
+    //SELECT ALL QUERY WITH  ID
+    public HashMap<String, String> selectQueryForLogin(String id) throws SQLException{
+    	Connection myConn=null;
+    	PreparedStatement pstmt=null;
+    	ResultSet myRs=null;
+    	HashMap<String, String> result =null;   
+		try {
+			// 1. Get a connection to database
+			myConn=getConnection();	
+			// 2. Create a statement
+			String sql="SELECT * FROM "+tableName+" WHERE Email=?";		
+			pstmt=myConn.prepareStatement(sql);
+			pstmt.setString(1,id);
+			// 3. Execute SQL query
+			myRs=pstmt.executeQuery();
+			//store all data into a HashMap
+			result =new  HashMap<String, String>(); 
+			result.put("username",myRs.getString("Name"));
+			result.put("useremail",myRs.getString("Email"));
+			result.put("userhash",myRs.getString("Hash"));
+			
+			System.out.println("SELET QUERY: SUCCESS");
+		}catch (SQLException exc) {
+			System.out.println("Error: "+exc.getMessage());
+		}finally {
+			
+			if (myRs != null) {
+				myRs.close();
+			}
+			
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			
+			if (myConn != null) {
+				myConn.close();
+			}
+		}
+		
+		return result;
+	}
+    
+    
     //INSERT INTO QUERY FOR EMPLOYEE INSERT
-    public String insertQueryForEmployee(String employeename, String designation, Integer salary) throws SQLException{
+    public Boolean insertQueryForEmployee(String employeename, String designation, Integer salary) throws SQLException{
+    	Boolean status=true;
         Connection myConn=null;
     	PreparedStatement pstmt=null;	
-    	String msg="success";
  	   try {
  			// 1. Get a connection to database
  			myConn=getConnection();	
@@ -131,15 +159,16 @@ public class Mysql {
  			}
  		}
  	   
- 		return msg;
+ 		return status;
  	}
     
     
-    //INSERT INTO QUERY FOR EMPLOYEE INSERT
-    public String insertQueryForSignUp(String username, String useremail , String userhash) throws SQLException{
+    //INSERT INTO QUERY FOR USER INSERT
+    public Boolean insertQueryForSignUp(String username, String useremail , String userhash) throws SQLException{
+    	Boolean status=true;
         Connection myConn=null;
     	PreparedStatement pstmt=null;	
-    	String msg="success";
+    	
  	   try {
  			// 1. Get a connection to database
  			myConn=getConnection();	
@@ -168,11 +197,12 @@ public class Mysql {
  			}
  		}
  	   
- 		return msg;
+ 		return status;
  	}
     
 	//DELETE QUERY
-    public String deleteQuery(Integer id) throws SQLException{
+    public Boolean deleteQuery(Integer id) throws SQLException{
+    	Boolean status=true;
     	Connection myConn=null;
       	PreparedStatement pstmt=null;	
 		try {
@@ -200,7 +230,7 @@ public class Mysql {
 			}
 		}
 		
-		return null;
+		return status;
 	}
     
     

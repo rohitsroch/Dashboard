@@ -42,14 +42,11 @@ public class LoginBean {
             Mysql mysql=new Mysql(tableName);
             Boolean isLoginSucessful=false;
             try {
-            	ArrayList<HashMap<String,String> > results=mysql.selectQuery(loginEmail);
-            	String username=null,useremail=null,userhash=null;
-				for(HashMap<String,String> map : results) {
-					username=map.get("username");
-					useremail=map.get("useremail");
-					userhash=map.get("userhash");
-				}
-				System.out.println(username +" "+useremail);
+            	HashMap<String,String> result=mysql.selectQueryForLogin(loginEmail);
+            	String username=result.get("username");
+            	String useremail=result.get("useremail");
+            	String userhash=result.get("userhash");
+				
 				//check hash values
 				String hash=mysql.getHashValue(loginPassword);
 				

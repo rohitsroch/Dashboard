@@ -199,6 +199,7 @@ li {
 .search-button{
 	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
     width:12%;
+    
 }
 
 .search-button .img-button{
@@ -219,26 +220,26 @@ li {
     border-left-style: none; 
     background-color: #ffdd00;
     background-image: url("#{resource['img/searchicon.png']}");  
-    background-size:18px 18px;
+    background-size:15px 15px;
     background-repeat: no-repeat;
     background-position: center; 
 }
 .search-button .img-button:hover{
 	background:#e6c700;
     background-image: url("#{resource['img/searchicon.png']}");  
-    background-size:18px 18px;
+    background-size:15px 15px;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-table {
+.employeeTable{
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid black;
+    border:1px solid #000000;
     padding: 5px;
 }
 
-td  input[type="button"]{
+.delete-button{
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -253,7 +254,7 @@ td  input[type="button"]{
     margin:5px auto;
     display:block;
 }
-td  input[type="button"]:hover{
+.delete-button:hover{
     background: #cc0000;
     cursor: pointer;
     border-bottom: 2px solid #990000;
@@ -261,18 +262,22 @@ td  input[type="button"]:hover{
     -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
 }
-td {
+.employeeTableOddRow{
     text-align: center;
-    display: table-cell;
-    background: #e6e6e6;
-    border: 1px solid black;
+    background:none repeat scroll 0 0 #FFFFFFF;	
+     border:1px solid #BBBBBB;
     padding: 2px;
 }
-th{
+.employeeTableEvenRow{
+    text-align: center;
+    background:none repeat scroll 0 0 #D3D3D3;
+    border:1px solid #BBBBBB;
+    padding: 2px;
+}
+.employeeTableHeader{
    text-align: center;
-   display: table-cell;
-   background:#8c8c8c;
-   border: 1px solid black;
+   background:none repeat scroll 0 0 #B5B5B5;
+   border-bottom:1px solid #000000;  
    padding: 5px;
 }
 

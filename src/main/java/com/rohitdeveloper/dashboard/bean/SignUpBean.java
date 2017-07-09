@@ -74,8 +74,8 @@ public class SignUpBean {
     	 Boolean isSignUpSucessful=false;
             try {
             	    String signUpHash=mysql.getHashValue(signUpPassword);
-         	        String result=mysql.insertQueryForSignUp(signUpName,signUpEmail,signUpHash);
-         	        if(result.equals("success") || result == "success") {
+         	        Boolean status=mysql.insertQueryForSignUp(signUpName,signUpEmail,signUpHash);
+         	        if(status) {
          	        	isSignUpSucessful=true;
          	        }
 			   } catch (Exception e) {

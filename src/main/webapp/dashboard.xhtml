@@ -32,26 +32,28 @@
                 <h:panelGroup layout="block" styleClass="employeeForm">
                    <h3>Employee Details</h3>
                    <h:form>
-                      <h:inputText label="Employee Name" styleClass="input-text" size="20" required="true" pt:placeholder="Employee Name">                                  
+                      <h:inputText value="#{employeeBean.employeename}"  label="Employee Name" styleClass="input-text" size="20" required="true" pt:placeholder="Employee Name">                                  
 	                      <f:validateLength minimum="2" maximum="20"/>
 	                  </h:inputText>
 	                  
-                      <h:inputText label="Designation" styleClass="input-text" size="30" required="true" pt:placeholder="Designation">                                  
+                      <h:inputText value="#{employeeBean.designation}" label="Designation" styleClass="input-text" size="30" required="true" pt:placeholder="Designation">                                  
 	                      <f:validateLength minimum="5" maximum="30"/>
 	                  </h:inputText>
                      
-                      <h:inputText label="Salary" styleClass="input-number" size="20" required="true" pt:placeholder="Salary (Annual in Rs) Example: Rs30000">                                  
-	                      <f:convertNumber type="currency" currencySymbol="Rs"/> 
-	                      <f:validateLength minimum="6" maximum="20"/>
+                      <h:inputText value="#{employeeBean.salary}" label="Salary" styleClass="input-number" size="20" required="true" pt:placeholder="Salary (Annual in Rs) Example: Rs1000000">                                  
+	                      <f:convertNumber type="currency" currencySymbol="Rs"/>
+	                      <f:validateLength minimum="5" maximum="20"/>
 	                  </h:inputText>
                
-                      <h:commandButton type="submit" value="Save" styleClass="save-button"/>
+                      <h:commandButton type="submit" value="Save" styleClass="save-button" action="#{employeeBean.insertEmployee()}">
+                          
+                      </h:commandButton>
      
                    </h:form>
                 </h:panelGroup>
                 
                <h:panelGroup layout="block" styleClass="search-container">
-                   <h:form styleClass="box"> 
+                   <h:form layout="block" styleClass="box"> 
                       
                          <h:panelGroup layout="block" styleClass="search-box" >
                            <h:inputText label="Search" styleClass="input-search" size="50" required="true" pt:placeholder="Search..."/>                                          
@@ -64,8 +66,52 @@
                    </h:form>   
                </h:panelGroup>
                 
-                <h:panelGroup layout="block" styleClass="container">
-  	                   <h3>No Records</h3>
+               <h:panelGroup layout="block" styleClass="container">
+                       <h:form>
+  	                   <h:dataTable value="#{employeeBean.employees}" var="emp"
+ 		                            styleClass = "employeeTable"
+                                    headerClass = "employeeTableHeader"
+                                    rowClasses = "employeeTableOddRow,employeeTableEvenRow">
+
+    		                  <h:column>
+    			                     <f:facet name="header">
+    				                        ID
+                                     </f:facet>
+    				                        #{emp.id}
+    		                  </h:column>
+
+    		                  <h:column>
+    			                   <f:facet name="header">
+    				                      Name
+				                   </f:facet>
+    				                     #{emp.employeename}
+    		                  </h:column>
+    		                  
+    		                   <h:column>
+    			                   <f:facet name="header">
+    				                      Designation
+				                   </f:facet>
+    				                     #{emp.designation}
+    		                   </h:column>
+                               
+                               <h:column>
+    			                   <f:facet name="header">
+    				                      Salary
+				                   </f:facet>
+    				                     #{emp.salary}
+    		                   </h:column>
+ 			
+    		                   <h:column>
+                                   <f:facet name = "header">
+                                          Delete
+                                   </f:facet>
+                                   <h:commandButton value="Delete" styleClass="delete-button" action="#{employeeBean.deleteEmployee(emp)}">
+                                            <f:ajax execute="@form" render="@form" />
+                                   </h:commandButton>                
+                               </h:column>
+
+    	               </h:dataTable>
+    	           </h:form>
                 </h:panelGroup>
                  
           </section>
