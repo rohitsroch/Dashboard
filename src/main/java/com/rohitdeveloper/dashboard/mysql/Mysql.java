@@ -24,7 +24,7 @@ public class Mysql {
 	
 	public Connection getConnection() {
 	      Connection con = null;
-	      String url = "jdbc:mysql://localhost:3306/employeedb";
+	      String url = "jdbc:mysql://localhost:3306/employeedb?useSSL=false";
 	      String user = "root";
 	      String password = "qwerty";
 	      

@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
@@ -14,6 +15,7 @@ import com.rohitdeveloper.dashboard.mysql.Mysql;
 import com.rohitdeveloper.dashboard.utils.SessionUtils;
 
 @ManagedBean(name="loginBean")
+@SessionScoped
 public class LoginBean {
         private String loginEmail;
         private String loginPassword;
@@ -45,16 +47,18 @@ public class LoginBean {
         	
             Mysql mysql=new Mysql(tableName);
             Boolean isLoginSucessful=false;
+            String username=null,useremail=null,userhash=null;
+            
             try {
             	HashMap<String,String> result=mysql.selectQueryForLogin(loginEmail);
-            	//String username=result.get("username");
-            	//String useremail=result.get("useremail");
-            	String userhash=result.get("userhash");
+            	username=result.get("username");
+            	useremail=result.get("useremail");
+            	userhash=result.get("userhash");
 				
 				//check hash values
 				String hash=mysql.getHashValue(loginPassword);
 				
-				if(hash.equals(userhash) || hash == userhash) {
+				if(hash.equals(userhash)) {
 					System.out.println("Hash Value: "+hash);
 					isLoginSucessful=true;
 				}
@@ -65,7 +69,8 @@ public class LoginBean {
             
             if(isLoginSucessful) {
             	HttpSession session = SessionUtils.getSession();
-    			session.setAttribute("username", loginEmail);
+    			session.setAttribute("username", username);
+    			session.setAttribute("useremail",useremail);
             	return "dashboard?faces-redirect=true";
             }else {
             	 RequestContext.getCurrentInstance().update("growl");
@@ -76,13 +81,5 @@ public class LoginBean {
 	
        }
         
-        
-       //logout event, invalidate session
-    	public String userLogout() {
-    		System.out.println("Logout");
-    		HttpSession session = SessionUtils.getSession();
-    		session.invalidate();
-    		return "account?faces-redirect=true";
-    	}
-                  
+                   
 }

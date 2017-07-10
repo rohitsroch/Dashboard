@@ -9,6 +9,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.json.JSONArray;
@@ -16,6 +17,7 @@ import org.primefaces.json.JSONObject;
 
 import com.rohitdeveloper.dashboard.model.Employee;
 import com.rohitdeveloper.dashboard.mysql.Mysql;
+import com.rohitdeveloper.dashboard.utils.SessionUtils;
 
 
 
@@ -23,8 +25,8 @@ import com.rohitdeveloper.dashboard.mysql.Mysql;
 @SessionScoped
 public class EmployeeBean {  
 	private String searchQuery;
-	
 	private String tableName="details";
+	
 	//For insertion in database
     private String employeename;
     private String designation;
@@ -150,7 +152,7 @@ public class EmployeeBean {
 		if(searchQuery.isEmpty()) {
 			 RequestContext.getCurrentInstance().update("growl");
 			 FacesContext context = FacesContext.getCurrentInstance(); 
-    	     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Search value cannot be empty !",""));
+    	     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Search: Validation Error: Value is required.",""));
 			 return;
 		}
 		try {
@@ -166,6 +168,11 @@ public class EmployeeBean {
 				emp.add(new Employee(obj.getInt("id"), obj.getString("EmployeeName"), obj.getString("Designation") ,obj.getInt("Salary")));
 			}
 			employees=emp;
+			if(resultEmployees.length() == 0) {
+				RequestContext.getCurrentInstance().update("growl");
+	        	FacesContext context = FacesContext.getCurrentInstance(); 
+	    	    context.addMessage(null, new FacesMessage("No Records Found !",""));
+			}
 			System.out.println(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -176,10 +183,27 @@ public class EmployeeBean {
 	}
  
 	public void updateDataTable() {
-		if(searchQuery.length() ==0 || searchQuery.isEmpty()) {
+		if(searchQuery.length() ==0  || searchQuery.isEmpty()) {
 			employees=getEmployeeList();
 		}	
 	}
 	
-		
+	
+	//logout event, invalidate session
+	public String userLogout() {
+		System.out.println("Logout");
+		HttpSession session = SessionUtils.getSession();
+		session.invalidate();
+		return "account?faces-redirect=true";
+	}
+	
+	public String getSessionUserName() {
+		String username=SessionUtils.getUserName();
+		return username;
+	}
+	
+	public String getSessionUserEmail() {
+		String useremail=SessionUtils.getUserEmail();
+		return useremail;
+	}
 }

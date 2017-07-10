@@ -6,7 +6,7 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
       
     <h:head>
-        <title>DashBoard</title>
+        <title>DashBoard Page</title>
     	<h:outputStylesheet library="css" name="dashboard.css"  /> 
     	<script src="js/dashboard.js"></script>
     </h:head>
@@ -18,15 +18,15 @@
            <h:panelGroup layout="block"  styleClass="profile">
                <li class="profile-logout">
                   <h:form>
-                  <h:commandButton value="Logout" styleClass="logoutButton" action="#{loginBean.userLogout()}"/>
+                  <h:commandButton value="Logout" styleClass="logoutButton" action="#{employeeBean.userLogout()}"/>
                   </h:form>
 	           </li>
                <li class="profile-avatar">
                  <h:graphicImage library="img" name="avatar.png" alt="avatar" height="60" width="60" styleClass="profile-avatar-img"/>
 	           </li>
 	           <li class="profile-info">
-	             <h:outputText id="info-name" value="Welcome Rohit"/><br/>
-	             <h:outputText id="info-email" value="rohitsroch@gmail.com"/>
+	             <h:outputText id="info-name" value="Welcome #{employeeBean.getSessionUserName()}"/><br/>
+	             <h:outputText id="info-email" value="#{employeeBean.getSessionUserEmail()}"/>
 	           </li> 
             </h:panelGroup>
          </header>

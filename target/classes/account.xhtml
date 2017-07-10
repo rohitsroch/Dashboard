@@ -6,7 +6,7 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
       
     <h:head>
-        <title>Account</title>
+        <title>Account Page</title>
     	<h:outputStylesheet library = "css" name = "account.css"  /> 
     </h:head>
 
@@ -17,7 +17,7 @@
             <h:graphicImage library="img" name="login.png" alt="Login" height="120" width="120"/>
          </h:panelGroup>
          
-         <h:panelGroup layout="block" styleClass="login">
+         <h:panelGroup id="userLogin" layout="block" styleClass="login">
                <h3>Welcome</h3>
                <h:form>
                      <h:inputText value="#{loginBean.loginEmail}" label="Email" styleClass="input-text" required="true" pt:placeholder="Enter Email">
@@ -64,8 +64,9 @@
                  
                   <h:selectBooleanCheckbox required="true" value="#{signupBean.isCreateAccount}"/> By creating an account you agree to our <a href="#">Terms &amp; Privacy</a>  
                 
-                  <h:commandButton type="submit" value="Sign Up" styleClass="button" action="#{signupBean.userSignUp()}" update="growl"/>
-                  
+                  <h:commandButton type="submit" value="Sign Up" styleClass="button" action="#{signupBean.userSignUp()}">
+                    
+                  </h:commandButton>
                  
             </h:form>
             

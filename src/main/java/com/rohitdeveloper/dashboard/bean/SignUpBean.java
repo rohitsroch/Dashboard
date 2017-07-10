@@ -4,6 +4,9 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+
+import org.primefaces.context.RequestContext;
+
 import javax.faces.application.FacesMessage;
 
 import com.rohitdeveloper.dashboard.mysql.Mysql;
@@ -63,10 +66,19 @@ public class SignUpBean {
 	}
 
 	public void userSignUp() throws NoSuchAlgorithmException{
-    	
-    	 if(signUpPassword != signUpPasswordRepeat) {
+		
+    	 System.out.println(isCreateAccount);
+    	 if(!(signUpPassword.equals(signUpPasswordRepeat))) {
+    		 RequestContext.getCurrentInstance().update("growl");
     		 FacesContext context = FacesContext.getCurrentInstance(); 
-    	     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Password and Repeat-Password not equal !",""));
+    	     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR," Validation Error: Password and Repeat-Password not equal !",""));
+    		 return;
+    	 }
+    	 
+    	 if(!isCreateAccount) {
+    		 RequestContext.getCurrentInstance().update("growl");
+    		 FacesContext context = FacesContext.getCurrentInstance(); 
+    	     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR," Validation Error: Terms & Conditions not checked",""));
     		 return;
     	 }
     	
@@ -83,9 +95,12 @@ public class SignUpBean {
 		     }
          
          if(isSignUpSucessful) {
+        	 RequestContext.getCurrentInstance().update("growl");
         	 FacesContext context = FacesContext.getCurrentInstance(); 
     	     context.addMessage(null, new FacesMessage("Successful: Acccount created ! "+signUpEmail,""));
+    	     clear();
          }else {
+        	 RequestContext.getCurrentInstance().update("growl");
         	 FacesContext context = FacesContext.getCurrentInstance(); 
     	     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error: Creating account !",""));
          }	
@@ -93,5 +108,11 @@ public class SignUpBean {
          return ;
     }
     
-           
+	public void clear() {
+		setSignUpName(null);
+		setSignUpEmail(null);
+		setSignUpPassword(null);
+		setSignUpPasswordRepeat(null);
+		setIsCreateAccount(false);
+	}        
 }
