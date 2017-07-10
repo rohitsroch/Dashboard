@@ -8,6 +8,7 @@
     <h:head>
         <title>DashBoard</title>
     	<h:outputStylesheet library="css" name="dashboard.css"  /> 
+    	<script src="js/dashboard.js"></script>
     </h:head>
 
     <h:body>
@@ -16,7 +17,9 @@
         <header class="headerSection">
            <h:panelGroup layout="block"  styleClass="profile">
                <li class="profile-logout">
-                  <h:commandButton type="button" value="Logout" styleClass="logoutButton"/>
+                  <h:form>
+                  <h:commandButton value="Logout" styleClass="logoutButton" action="#{loginBean.userLogout()}"/>
+                  </h:form>
 	           </li>
                <li class="profile-avatar">
                  <h:graphicImage library="img" name="avatar.png" alt="avatar" height="60" width="60" styleClass="profile-avatar-img"/>
@@ -56,17 +59,21 @@
                    <h:form layout="block" styleClass="box"> 
                       
                          <h:panelGroup layout="block" styleClass="search-box" >
-                           <h:inputText label="Search" styleClass="input-search" size="50" required="true" pt:placeholder="Search..."/>                                          
+                           <h:inputText  value="#{employeeBean.searchQuery}" label="Search" styleClass="input-search" size="50"  pt:placeholder="Search...">
+                                 <p:ajax event="keyup"  update="empDataTable" listener="#{employeeBean.updateDataTable()}"></p:ajax>
+                           </h:inputText>                                          
                          </h:panelGroup>
                      
                          <h:panelGroup layout="block" styleClass="search-button">
-                          <h:commandButton type="submit" value="" styleClass="img-button"/>      
+                          <h:commandButton type="submit" value="" styleClass="img-button"  action="#{employeeBean.getFilterSearchResult()}">
+                               <f:ajax execute="@form" render="empDataTable" />
+                          </h:commandButton>      
                          </h:panelGroup>
                      
                    </h:form>   
                </h:panelGroup>
                 
-               <h:panelGroup layout="block" styleClass="container">
+               <h:panelGroup id="empDataTable" layout="block" styleClass="container">
                        <h:form>
   	                   <h:dataTable value="#{employeeBean.employees}" var="emp"
  		                            styleClass = "employeeTable"
@@ -115,6 +122,7 @@
                 </h:panelGroup>
                  
           </section>
+          
              
     </h:body>   
 </html>

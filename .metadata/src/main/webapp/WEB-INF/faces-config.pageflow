@@ -1,2 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pageflow:Pageflow xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf14993585066170" configfile="/EmployeeDashboard/src/main/webapp/WEB-INF/faces-config.xml"/>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf14993585066170" configfile="/EmployeeDashboard/src/main/webapp/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="account.xhtml" id="pf14996884009460" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf14996884009461" path="/account.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="dashboard.xhtml" id="pf14996884009462" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf14996884009461" path="/dashboard.xhtml"/>
+  <links id="pf14996884009461" target="pf14996884009462" source="pf14996884009460" outcome="DashBoard"/>
+</pageflow:Pageflow>

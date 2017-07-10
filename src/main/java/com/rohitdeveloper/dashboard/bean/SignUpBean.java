@@ -66,7 +66,7 @@ public class SignUpBean {
     	
     	 if(signUpPassword != signUpPasswordRepeat) {
     		 FacesContext context = FacesContext.getCurrentInstance(); 
-    	     context.addMessage(null, new FacesMessage("Error: Password and Repeat-Password not equal !",""));
+    	     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Password and Repeat-Password not equal !",""));
     		 return;
     	 }
     	
@@ -87,7 +87,7 @@ public class SignUpBean {
     	     context.addMessage(null, new FacesMessage("Successful: Acccount created ! "+signUpEmail,""));
          }else {
         	 FacesContext context = FacesContext.getCurrentInstance(); 
-    	     context.addMessage(null, new FacesMessage("Error: creating account !",""));
+    	     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error: Creating account !",""));
          }	
          
          return ;

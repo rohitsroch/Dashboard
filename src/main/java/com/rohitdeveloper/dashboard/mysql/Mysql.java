@@ -61,9 +61,9 @@ public class Mysql {
 					results.add(curremp);
 			 }
 				
-			System.out.println("SELET QUERY: SUCCESS");
+			System.out.println("SELECT QUERY: SUCCESS");
 		}catch (SQLException exc) {
-			System.out.println("Error: "+exc.getMessage());
+			System.out.println("SQL Error: "+exc.getMessage());
 		}finally {
 			
 			if (myRs != null) {
@@ -88,7 +88,7 @@ public class Mysql {
     	Connection myConn=null;
     	PreparedStatement pstmt=null;
     	ResultSet myRs=null;
-    	HashMap<String, String> result =null;   
+    	HashMap<String, String> result =new  HashMap<String, String>();;   
 		try {
 			// 1. Get a connection to database
 			myConn=getConnection();	
@@ -99,14 +99,15 @@ public class Mysql {
 			// 3. Execute SQL query
 			myRs=pstmt.executeQuery();
 			//store all data into a HashMap
-			result =new  HashMap<String, String>(); 
-			result.put("username",myRs.getString("Name"));
-			result.put("useremail",myRs.getString("Email"));
-			result.put("userhash",myRs.getString("Hash"));
-			
-			System.out.println("SELET QUERY: SUCCESS");
+			while(myRs.next()) {
+				result.put("username",myRs.getString("Name"));
+				result.put("useremail",myRs.getString("Email"));
+				result.put("userhash",myRs.getString("Hash"));
+			}
+		    
+			System.out.println("SELECT QUERY: SUCCESS");
 		}catch (SQLException exc) {
-			System.out.println("Error: "+exc.getMessage());
+			System.out.println("SQL Error: "+exc.getMessage());
 		}finally {
 			
 			if (myRs != null) {
@@ -147,7 +148,7 @@ public class Mysql {
  			System.out.println("INSERT QUERY: SUCCESS");
  			
  		}catch (SQLException exc) {
- 			System.out.println("Error: "+exc.getMessage());
+ 			System.out.println("SQL Error: "+exc.getMessage());
  			
  		}finally {
  			if (pstmt != null) {
@@ -185,7 +186,7 @@ public class Mysql {
  			System.out.println("INSERT QUERY: SUCCESS");
  			
  		}catch (SQLException exc) {
- 			System.out.println("Error: "+exc.getMessage());
+ 			System.out.println("SQL Error: "+exc.getMessage());
  			
  		}finally {
  			if (pstmt != null) {
@@ -219,7 +220,7 @@ public class Mysql {
 			System.out.println("DELETE QUERY: SUCCESS");
 			
 		}catch (SQLException exc) {
-			System.out.println(exc.getMessage());
+			System.out.println("SQL Error: "+exc.getMessage());
 		}finally {
 			if (pstmt != null) {
 				pstmt.close();
