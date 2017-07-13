@@ -9,11 +9,13 @@ JSF web framework based Employee dashboard application which allows the user to 
 ### Use link
 localhost:8080/EmployeeDashboard/faces/account.xhtml
 
-### Update src/main/java/com/rohitdeveloper/dashboard/mysql/Mysql.java 
+### Update src/main/java/com/rohitdeveloper/dashboard/mysql/Mysql.java
+'''
 public Connection getConnection() {
 	      Connection con = null;
 	      String url = "jdbc:mysql://localhost:3306/employeedb?useSSL=false";
 	      String user = "root";
 	      String password = "qwerty";
 }
+'''
 Replace "user" and "password"
