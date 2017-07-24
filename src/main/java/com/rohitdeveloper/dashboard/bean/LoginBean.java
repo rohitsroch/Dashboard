@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
 
+import com.rohitdeveloper.dashboard.entity.Account;
 import com.rohitdeveloper.dashboard.mysql.Mysql;
 import com.rohitdeveloper.dashboard.utils.SessionUtils;
 
@@ -19,7 +20,6 @@ import com.rohitdeveloper.dashboard.utils.SessionUtils;
 public class LoginBean {
         private String loginEmail;
         private String loginPassword;
-        private String tableName="account";
          
         //no arg public constructor
         public LoginBean() {
@@ -45,18 +45,17 @@ public class LoginBean {
 		
         public String userLogin() throws NoSuchAlgorithmException{
         	
-            Mysql mysql=new Mysql(tableName);
-            Boolean isLoginSucessful=false;
+            boolean isLoginSucessful=false;
             String username=null,useremail=null,userhash=null;
             
             try {
-            	HashMap<String,String> result=mysql.selectQueryForLogin(loginEmail);
-            	username=result.get("username");
-            	useremail=result.get("useremail");
-            	userhash=result.get("userhash");
-				
+            	 Account result=Mysql.selectByIdQuery(loginEmail);
+            	 username=result.getName();
+            	 useremail=result.getEmail();
+            	 userhash=result.getHash();
 				//check hash values
-				String hash=mysql.getHashValue(loginPassword);
+            	 System.out.println(userhash);
+				String hash=Mysql.getHashValue(loginPassword);
 				
 				if(hash.equals(userhash)) {
 					System.out.println("Hash Value: "+hash);

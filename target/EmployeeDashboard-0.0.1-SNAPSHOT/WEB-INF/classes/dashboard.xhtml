@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+      
+    <h:head>
+        <title>DashBoard Page</title>
+         <link rel="shortcut icon" type="image/x-icon" href="#{resource['img/favicon.png']}"/>
+    	<h:outputStylesheet library="css" name="dashboard.css"  /> 
+    </h:head>
+
+    <h:body>
+        <p:growl id="growl" />
+        
+        <header class="headerSection">
+           <h:panelGroup layout="block"  styleClass="profile">
+               <li class="profile-logout">
+                  <h:form>
+                  <h:commandButton value="Logout" styleClass="logoutButton" action="#{employeeBean.userLogout()}"/>
+                  </h:form>
+	           </li>
+               <li class="profile-avatar">
+                 <h:graphicImage library="img" name="avatar.png" alt="avatar" height="60" width="60" styleClass="profile-avatar-img"/>
+	           </li>
+	           <li class="profile-info">
+	             <h:outputText id="info-name" value="Welcome #{employeeBean.getSessionUserName()}"/><br/>
+	             <h:outputText id="info-email" value="#{employeeBean.getSessionUserEmail()}"/>
+	           </li> 
+            </h:panelGroup>
+         </header>
+         
+          <section class="contentSection">
+                <h:panelGroup layout="block" styleClass="employeeForm">
+                   <h3>Employee Details</h3>
+                   <h:form>
+                      <h:inputText value="#{employeeBean.employeename}"  label="Employee Name" styleClass="input-text" size="20" required="true" pt:placeholder="Employee Name">                                  
+	                      <f:validateLength minimum="2" maximum="20"/>
+	                  </h:inputText>
+	                  
+                      <h:inputText value="#{employeeBean.designation}" label="Designation" styleClass="input-text" size="30" required="true" pt:placeholder="Designation">                                  
+	                      <f:validateLength minimum="5" maximum="30"/>
+	                  </h:inputText>
+                     
+                      <h:inputText value="#{employeeBean.salary}" label="Salary" styleClass="input-number" size="20" required="true" pt:placeholder="Salary (Annual in Rs) Example: Rs1000000">                                  
+	                      <f:convertNumber type="currency" currencySymbol="Rs"/>
+	                      <f:validateLength minimum="5" maximum="20"/>
+	                  </h:inputText>
+               
+                      <h:commandButton type="submit" value="Save" styleClass="save-button" action="#{employeeBean.insertEmployee()}">
+                          
+                      </h:commandButton>
+     
+                   </h:form>
+                </h:panelGroup>
+                
+               <h:panelGroup layout="block" styleClass="search-container">
+                   <h:form layout="block" styleClass="box"> 
+                      
+                         <h:panelGroup layout="block" styleClass="search-box" >
+                           <h:inputText  value="#{employeeBean.searchQuery}" label="Search" styleClass="input-search" size="50"  pt:placeholder="Search...">
+                                 <p:ajax event="keyup"  update="empDataTable" listener="#{employeeBean.updateDataTable()}"></p:ajax>
+                           </h:inputText>                                          
+                         </h:panelGroup>
+                     
+                         <h:panelGroup layout="block" styleClass="search-button">
+                          <h:commandButton type="submit" value="" styleClass="img-button"  action="#{employeeBean.getFilterSearchResult()}">
+                               <f:ajax execute="@form" render="empDataTable" />
+                          </h:commandButton>      
+                         </h:panelGroup>
+                     
+                   </h:form>   
+               </h:panelGroup>
+                
+               <h:panelGroup id="empDataTable" layout="block" styleClass="container">
+                       <h:form>
+  	                   <h:dataTable value="#{employeeBean.employees}" var="emp"
+ 		                            styleClass = "employeeTable"
+                                    headerClass = "employeeTableHeader"
+                                    rowClasses = "employeeTableOddRow,employeeTableEvenRow">
+
+    		                  <h:column>
+    			                     <f:facet name="header">
+    				                        ID
+                                     </f:facet>
+    				                        #{emp.id}
+    		                  </h:column>
+
+    		                  <h:column>
+    			                   <f:facet name="header">
+    				                      Name
+				                   </f:facet>
+    				                     #{emp.employeename}
+    		                  </h:column>
+    		                  
+    		                   <h:column>
+    			                   <f:facet name="header">
+    				                      Designation
+				                   </f:facet>
+    				                     #{emp.designation}
+    		                   </h:column>
+                               
+                               <h:column>
+    			                   <f:facet name="header">
+    				                      Salary (Annual in Rs)
+				                   </f:facet>
+    				                     #{emp.salary}
+    		                   </h:column>
+ 			
+    		                   <h:column>
+                                   <f:facet name = "header">
+                                          Delete
+                                   </f:facet>
+                                   <h:commandButton value="Delete" styleClass="delete-button" action="#{employeeBean.deleteEmployee(emp)}">
+                                            <f:ajax execute="@form" render="@form" />
+                                   </h:commandButton>                
+                               </h:column>
+
+    	               </h:dataTable>
+    	           </h:form>
+                </h:panelGroup>
+                 
+          </section>
+          
+             
+    </h:body>   
+</html>

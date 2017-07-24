@@ -2,240 +2,128 @@ package com.rohitdeveloper.dashboard.mysql;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Properties;
+import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.Query;
+import javax.jdo.Transaction;
 
-import com.rohitdeveloper.dashboard.model.Employee;
+import com.rohitdeveloper.dashboard.entity.Account;
 
 
 public class Mysql {
 	
-	private String tableName;
+	public static PersistenceManagerFactory getInstance() {
+	    Properties p=new Properties();		
+		p.setProperty("javax.jdo.PersistenceManagerFactoryClass", "org.datanucleus.api.jdo.JDOPersistenceManagerFactory");
+		p.setProperty("javax.jdo.option.ConnectionURL", "jdbc:mysql://localhost:3306/employeedb");
+		p.setProperty("javax.jdo.option.ConnectionDriverName", "com.mysql.jdbc.Driver");
+		p.setProperty("javax.jdo.option.ConnectionUserName", "root");
+		p.setProperty("javax.jdo.option.ConnectionPassword", "root");
+		p.setProperty("datanucleus.autoCreateSchema", "true");
+		PersistenceManagerFactory pmf = JDOHelper.getPersistenceManagerFactory(p);
+		return pmf;
+    }
 	
+	/**
+	 * returns an account by id from the database
+	 * @param id
+	 * @return
+	 */
+	public static Account selectByIdQuery(String useremail) {
+		PersistenceManagerFactory pmf = getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		Account account = new Account();
+		try {
+			tx.begin();
+			Query query = pm.newQuery(Account.class, "Email == " + useremail);
+			Collection result = (Collection) query.execute();
+			if (result.size() != 0) {
+				account = (Account) result.iterator().next();
+				tx.commit();
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+		} finally {
+			if (tx.isActive()) {
+				tx.rollback();
+			}
+			pm.close();
+		}
+		return account;
 
-	public Mysql(String tableName) {
-		this.tableName=tableName;
 	}
-	
-	public Connection getConnection() {
-	      Connection con = null;
-	      String url = "jdbc:mysql://localhost:3306/employeedb?useSSL=false";
-	      String user = "root";
-	      String password = "qwerty";
-	      
-	      try {
-	         con = DriverManager.getConnection(url, user, password);
-	         System.out.println("Connection completed.");
-	      } catch (SQLException ex) {
-	         System.out.println(ex.getMessage());
-	      }
-	      return con;
-	}
-	
-   //SELECT ALL QUERY WITHOUT ID
-    public ArrayList<Employee> selectQueryForEmployee() throws SQLException{
-    	Connection myConn=null;
-    	PreparedStatement pstmt=null;
-    	ResultSet myRs=null;
-    	ArrayList<Employee> results =new ArrayList<Employee>();    
+  
+	/**
+	 *  insert account data into the database
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public static boolean insertQuery(String username, String useremail , String userhash) {
+		PersistenceManagerFactory pmf = getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		boolean isInserted = false;
 		try {
-			// 1. Get a connection to database
-			myConn=getConnection();	
-			// 2. Create a statement
-			String sql="SELECT * FROM "+tableName;		
-			pstmt=myConn.prepareStatement(sql);
-			// 3. Execute SQL query
-			myRs=pstmt.executeQuery();
-			while (myRs.next()) {
-				    Employee curremp=new Employee();
-				    curremp.setId(myRs.getInt("id"));
-					curremp.setEmployeename(myRs.getString("EmployeeName"));
-					curremp.setDesignation(myRs.getString("Designation"));
-					curremp.setSalary(myRs.getInt("Salary"));
-					//store all data into a List
-					results.add(curremp);
-			 }
-				
-			System.out.println("SELECT QUERY: SUCCESS");
-		}catch (SQLException exc) {
-			System.out.println("SQL Error: "+exc.getMessage());
-		}finally {
-			
-			if (myRs != null) {
-				myRs.close();
+			tx.begin();
+			Account account = new Account(); // insert object data
+			account.setName(username);
+			account.setEmail(useremail);
+			account.setHash(userhash);
+			pm.makePersistent(account); // insert into table
+			tx.commit();
+			isInserted = true;
+		} catch (Throwable t) {
+			t.printStackTrace();
+		} finally {
+			if (tx.isActive()) {
+				tx.rollback();
 			}
-			
-			if (pstmt != null) {
-				pstmt.close();
-			}
-			
-			if (myConn != null) {
-				myConn.close();
-			}
+			pm.close();
 		}
-		
-		return results;
+
+		return isInserted;
 	}
     
     
-    //SELECT ALL QUERY WITH  ID
-    public HashMap<String, String> selectQueryForLogin(String id) throws SQLException{
-    	Connection myConn=null;
-    	PreparedStatement pstmt=null;
-    	ResultSet myRs=null;
-    	HashMap<String, String> result =new  HashMap<String, String>();;   
+	/**
+	 * delete account data from the database
+	 * @param id
+	 * @return
+	 */
+	public static boolean deleteQuery(String useremail) {
+		PersistenceManagerFactory pmf = getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		Transaction tx = pm.currentTransaction();
+		boolean isDeleted = false;
 		try {
-			// 1. Get a connection to database
-			myConn=getConnection();	
-			// 2. Create a statement
-			String sql="SELECT * FROM "+tableName+" WHERE Email=?";		
-			pstmt=myConn.prepareStatement(sql);
-			pstmt.setString(1,id);
-			// 3. Execute SQL query
-			myRs=pstmt.executeQuery();
-			//store all data into a HashMap
-			while(myRs.next()) {
-				result.put("username",myRs.getString("Name"));
-				result.put("useremail",myRs.getString("Email"));
-				result.put("userhash",myRs.getString("Hash"));
+			tx.begin();
+			Query query = pm.newQuery(Account.class, "Email == " + useremail);
+			Collection result = (Collection) query.execute();
+			if (result.size() != 0) {
+				Account toBeDeleted = (Account) result.iterator().next();
+				pm.deletePersistent(toBeDeleted); // delete from table
+				tx.commit();
+				isDeleted = true;
 			}
-		    
-			System.out.println("SELECT QUERY: SUCCESS");
-		}catch (SQLException exc) {
-			System.out.println("SQL Error: "+exc.getMessage());
-		}finally {
-			
-			if (myRs != null) {
-				myRs.close();
+		} catch (Throwable t) {
+			t.printStackTrace();
+		} finally {
+			if (tx.isActive()) {
+				tx.rollback();
 			}
-			
-			if (pstmt != null) {
-				pstmt.close();
-			}
-			
-			if (myConn != null) {
-				myConn.close();
-			}
+			pm.close();
 		}
-		
-		return result;
+
+		return isDeleted;
 	}
+     
     
-    
-    //INSERT INTO QUERY FOR EMPLOYEE INSERT
-    public Boolean insertQueryForEmployee(String employeename, String designation, Integer salary) throws SQLException{
-    	Boolean status=true;
-        Connection myConn=null;
-    	PreparedStatement pstmt=null;	
- 	   try {
- 			// 1. Get a connection to database
- 			myConn=getConnection();	
- 			// 2. Create a statement	
- 			String sql="INSERT INTO details (EmployeeName,Designation,Salary) "+
- 					" VALUES (?,?,?)"; 
- 			pstmt=myConn.prepareStatement(sql);
- 			pstmt.setString(1,employeename);
- 			pstmt.setString(2,designation);
- 			pstmt.setInt(3,salary);
- 		    // 3. Execute SQL query
- 			pstmt.execute();
- 			
- 			System.out.println("INSERT QUERY: SUCCESS");
- 			
- 		}catch (SQLException exc) {
- 			System.out.println("SQL Error: "+exc.getMessage());
- 			
- 		}finally {
- 			if (pstmt != null) {
- 				pstmt.close();
- 			}
- 			
- 			if (myConn != null) {
- 				myConn.close();
- 			}
- 		}
- 	   
- 		return status;
- 	}
-    
-    
-    //INSERT INTO QUERY FOR USER INSERT
-    public Boolean insertQueryForSignUp(String username, String useremail , String userhash) throws SQLException{
-    	Boolean status=true;
-        Connection myConn=null;
-    	PreparedStatement pstmt=null;	
-    	
- 	   try {
- 			// 1. Get a connection to database
- 			myConn=getConnection();	
- 			// 2. Create a statement	
- 			String sql="INSERT INTO account (Name,Email,Hash) "+
- 					" VALUES (?,?,?)"; 
- 			pstmt=myConn.prepareStatement(sql);
- 			pstmt.setString(1,username);
- 			pstmt.setString(2,useremail);
- 			pstmt.setString(3,userhash);
- 		    // 3. Execute SQL query
- 			pstmt.execute();
- 			
- 			System.out.println("INSERT QUERY: SUCCESS");
- 			
- 		}catch (SQLException exc) {
- 			System.out.println("SQL Error: "+exc.getMessage());
- 			
- 		}finally {
- 			if (pstmt != null) {
- 				pstmt.close();
- 			}
- 			
- 			if (myConn != null) {
- 				myConn.close();
- 			}
- 		}
- 	   
- 		return status;
- 	}
-    
-	//DELETE QUERY
-    public Boolean deleteQuery(Integer id) throws SQLException{
-    	Boolean status=true;
-    	Connection myConn=null;
-      	PreparedStatement pstmt=null;	
-		try {
-			// 1. Get a connection to database
-			myConn=getConnection();	
-			// 2. Create a statement		
-			String sql="DELETE FROM details WHERE id=?";		
-			pstmt=myConn.prepareStatement(sql);
-			pstmt.setInt(1,id);
-			
-			// 3. Execute SQL query
-			pstmt.execute();
-			
-			System.out.println("DELETE QUERY: SUCCESS");
-			
-		}catch (SQLException exc) {
-			System.out.println("SQL Error: "+exc.getMessage());
-		}finally {
-			if (pstmt != null) {
-				pstmt.close();
-			}
-			
-			if (myConn != null) {
-				myConn.close();
-			}
-		}
-		
-		return status;
-	}
-    
-    
-    public String getHashValue(String password) throws NoSuchAlgorithmException {
+    public static String getHashValue(String password) throws NoSuchAlgorithmException {
     	//get the hash value using sha256 algorithm!
     	String secret="qwerty";
     	String input= secret+""+password;

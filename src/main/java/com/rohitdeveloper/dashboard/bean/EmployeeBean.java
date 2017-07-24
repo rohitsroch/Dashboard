@@ -15,8 +15,9 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.json.JSONArray;
 import org.primefaces.json.JSONObject;
 
-import com.rohitdeveloper.dashboard.model.Employee;
+import com.rohitdeveloper.dashboard.entity.Employee;
 import com.rohitdeveloper.dashboard.mysql.Mysql;
+import com.rohitdeveloper.dashboard.rest.RestClient;
 import com.rohitdeveloper.dashboard.utils.SessionUtils;
 
 
@@ -25,7 +26,6 @@ import com.rohitdeveloper.dashboard.utils.SessionUtils;
 @SessionScoped
 public class EmployeeBean {  
 	private String searchQuery;
-	private String tableName="details";
 	
 	//For insertion in database
     private String employeename;
@@ -78,10 +78,10 @@ public class EmployeeBean {
 	}
 
 	public ArrayList<Employee> getEmployeeList(){ 
-		Mysql mysql=new Mysql(tableName);
+
 		ArrayList<Employee> emp=new ArrayList<Employee>();
 		try {
-			  emp=mysql.selectQueryForEmployee();  
+			  emp=RestClient.getRequest();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -90,14 +90,16 @@ public class EmployeeBean {
 	
 	
 	public String insertEmployee() {
-		Mysql mysql=new Mysql(tableName);
+		
 		try {
-			Boolean status=mysql.insertQueryForEmployee(employeename,designation,salary.intValue());
+			Employee emp = new Employee();
+			emp.setEmployeename(employeename);
+			emp.setDesignation(designation);
+			emp.setSalary(salary.intValue());
+			Boolean status=RestClient.postRequest(emp);
 			if(status) {
 				employees=getEmployeeList();
 				clear(); 
-				String dataImport=readUrl("http://localhost:8983/solr/dataimport?command=full-import&wt=json&indent=true");
-				System.out.println(dataImport);
 			}
 			
 		}catch(Exception e) {
@@ -108,14 +110,12 @@ public class EmployeeBean {
 	
 	public void deleteEmployee(Employee emp){
 	    Integer id=emp.getId();
-		Mysql mysql=new Mysql(tableName);
 		try {
-			Boolean status=mysql.deleteQuery(id);
+			Boolean status=RestClient.deleteRequest(id);
 			if(status) {
 				employees.remove(emp);
 				clear(); 
-				String dataImport=readUrl("http://localhost:8983/solr/dataimport?command=full-import&wt=json&indent=true");
-				System.out.println(dataImport);	
+				//String dataImport=readUrl("http://localhost:8983/solr/dataimport?command=full-import&wt=json&indent=true");
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
