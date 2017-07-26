@@ -7,6 +7,6 @@ JSF web framework based Employee dashboard application which allows the user to 
 ![alt text](https://github.com/rdeveloperIITR/Dashboard/blob/master/Screenshots/3.png)
 
 ### Use link
-localhost:8080/EmployeeDashboard/faces/account.xhtml
+http://localhost:8080/EmployeeDashboard/faces/account.xhtml
 
 
