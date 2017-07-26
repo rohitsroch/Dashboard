@@ -3,7 +3,11 @@ package com.rohitdeveloper.dashboard.mysql;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+
+import javax.annotation.processing.Filer;
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
@@ -32,15 +36,18 @@ public class Mysql {
 	 * @param id
 	 * @return
 	 */
-	public static Account selectByIdQuery(String useremail) {
+	public static Account selectByIdQuery(String email) {
 		PersistenceManagerFactory pmf = getInstance();
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
 		Account account = new Account();
 		try {
 			tx.begin();
-			Query query = pm.newQuery(Account.class, "Email == " + useremail);
-			Collection result = (Collection) query.execute();
+			Query query = pm.newQuery(Account.class);
+			query.setFilter("email == :theEmail");
+			Map<String, String> paramValues = new HashMap();
+			paramValues.put("theEmail", email);
+			Collection result = (Collection) query.executeWithMap(paramValues);
 			if (result.size() != 0) {
 				account = (Account) result.iterator().next();
 				tx.commit();
@@ -54,7 +61,6 @@ public class Mysql {
 			pm.close();
 		}
 		return account;
-
 	}
   
 	/**
@@ -95,15 +101,18 @@ public class Mysql {
 	 * @param id
 	 * @return
 	 */
-	public static boolean deleteQuery(String useremail) {
+	public static boolean deleteQuery(String email) {
 		PersistenceManagerFactory pmf = getInstance();
 		PersistenceManager pm = pmf.getPersistenceManager();
 		Transaction tx = pm.currentTransaction();
 		boolean isDeleted = false;
 		try {
 			tx.begin();
-			Query query = pm.newQuery(Account.class, "Email == " + useremail);
-			Collection result = (Collection) query.execute();
+			Query query = pm.newQuery(Account.class);
+			query.setFilter("email == :theEmail");
+			Map<String, String> paramValues = new HashMap();
+			paramValues.put("theEmail", email);
+			Collection result = (Collection) query.executeWithMap(paramValues);
 			if (result.size() != 0) {
 				Account toBeDeleted = (Account) result.iterator().next();
 				pm.deletePersistent(toBeDeleted); // delete from table

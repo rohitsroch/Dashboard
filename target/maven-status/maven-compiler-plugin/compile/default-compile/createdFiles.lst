@@ -1,5 +1,6 @@
 com\rohitdeveloper\dashboard\mysql\Mysql.class
 com\rohitdeveloper\dashboard\entity\Employee.class
+com\rohitdeveloper\dashboard\rest\RestClient$3.class
 com\rohitdeveloper\dashboard\bean\LoginBean.class
 com\rohitdeveloper\dashboard\bean\SignUpBean.class
 com\rohitdeveloper\dashboard\utils\SessionUtils.class

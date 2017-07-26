@@ -1,8 +1,5 @@
 package com.rohitdeveloper.dashboard.bean;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javax.faces.application.FacesMessage;
@@ -12,11 +9,8 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.json.JSONArray;
-import org.primefaces.json.JSONObject;
 
 import com.rohitdeveloper.dashboard.entity.Employee;
-import com.rohitdeveloper.dashboard.mysql.Mysql;
 import com.rohitdeveloper.dashboard.rest.RestClient;
 import com.rohitdeveloper.dashboard.utils.SessionUtils;
 
@@ -78,7 +72,6 @@ public class EmployeeBean {
 	}
 
 	public ArrayList<Employee> getEmployeeList(){ 
-
 		ArrayList<Employee> emp=new ArrayList<Employee>();
 		try {
 			  emp=RestClient.getRequest();
@@ -96,8 +89,10 @@ public class EmployeeBean {
 			emp.setEmployeename(employeename);
 			emp.setDesignation(designation);
 			emp.setSalary(salary.intValue());
-			Boolean status=RestClient.postRequest(emp);
-			if(status) {
+			Integer empId=RestClient.postRequest(emp);
+			emp.setId(empId);
+			boolean isDocumentadded=RestClient.solrSearchPostRequest(emp);
+			if(empId!=null && isDocumentadded) {
 				employees=getEmployeeList();
 				clear(); 
 			}
@@ -111,11 +106,11 @@ public class EmployeeBean {
 	public void deleteEmployee(Employee emp){
 	    Integer id=emp.getId();
 		try {
-			Boolean status=RestClient.deleteRequest(id);
-			if(status) {
+			boolean status=RestClient.deleteRequest(id);
+			boolean isDocumentdeleted=RestClient.solrSearchDeleteRequest(id);
+			if(status &&  isDocumentdeleted) {
 				employees.remove(emp);
 				clear(); 
-				//String dataImport=readUrl("http://localhost:8983/solr/dataimport?command=full-import&wt=json&indent=true");
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -128,26 +123,7 @@ public class EmployeeBean {
 		setSalary(null);
 	}
 	
-	
-	private String readUrl(String urlString) throws Exception {
-	    BufferedReader reader = null;
-	    try {
-	        URL url = new URL(urlString);
-	        reader = new BufferedReader(new InputStreamReader(url.openStream()));
-	        StringBuffer buffer = new StringBuffer();
-	        int read;
-	        char[] chars = new char[10024];
-	        while ((read = reader.read(chars)) != -1)
-	            buffer.append(chars, 0, read); 
 
-	        return buffer.toString();
-	    } finally {
-	        if (reader != null)
-	            reader.close();
-	    }
-	}
-	
-	
 	public void getFilterSearchResult() {
 		if(searchQuery.isEmpty()) {
 			 RequestContext.getCurrentInstance().update("growl");
@@ -156,24 +132,12 @@ public class EmployeeBean {
 			 return;
 		}
 		try {
-			String dataImport=readUrl("http://localhost:8983/solr/dataimport?command=full-import&wt=json&indent=true");
-			System.out.println(dataImport);
-			String filteredResult = readUrl("http://localhost:8983/solr/collection1/select?wt=json&indent=true&q=collector:"+searchQuery);
-			JSONObject json = new JSONObject(filteredResult);
-			JSONObject response=json.getJSONObject("response");
-			JSONArray resultEmployees=response.getJSONArray("docs");
-			ArrayList<Employee> emp=new ArrayList<Employee>();
-			for(int index=0 ; index <resultEmployees.length() ;index++) {
-				JSONObject obj= resultEmployees.getJSONObject(index);	
-				emp.add(new Employee(obj.getInt("id"), obj.getString("EmployeeName"), obj.getString("Designation") ,obj.getInt("Salary")));
-			}
-			employees=emp;
-			if(resultEmployees.length() == 0) {
+		    employees=RestClient.solrSearchGetRequest(searchQuery);
+			if(employees.size()== 0) {
 				RequestContext.getCurrentInstance().update("growl");
 	        	FacesContext context = FacesContext.getCurrentInstance(); 
 	    	    context.addMessage(null, new FacesMessage("No Records Found !",""));
 			}
-			System.out.println(json);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println("Error: "+e.getMessage());
